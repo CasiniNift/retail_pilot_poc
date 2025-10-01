@@ -1,0 +1,1 @@
+import type { AnalysisResult, BusinessSnapshot } from '@/lib/types';
