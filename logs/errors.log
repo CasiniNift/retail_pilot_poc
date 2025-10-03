@@ -1,0 +1,5 @@
+2025-10-03 08:00:19 | ERROR    | errors | log_error:94 | Test error logging
+Traceback (most recent call last):
+  File "/Users/christiancasini/retail_pilot_poc/python-service/test_logging.py", line 60, in <module>
+    raise ValueError("This is a test error")
+ValueError: This is a test error

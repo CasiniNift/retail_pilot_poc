@@ -1,0 +1,34 @@
+2025-10-03 08:00:19 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 08:00:19 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 08:00:19 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 08:00:19 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T08:00:19.062276
+2025-10-03 08:00:19 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 08:00:19 | INFO     | app | log_app_info:123 | Test log entry - INFO level
+2025-10-03 08:00:19 | WARNING  | app | log_app_warning:128 | Test log entry - WARNING level
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T08:02:54.172670
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 08:02:54 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 08:03:43 | INFO     | app | log_app_info:123 | Request: GET /
+2025-10-03 08:03:43 | INFO     | app | log_app_info:123 | Root endpoint accessed
+2025-10-03 08:03:43 | INFO     | app | log_app_info:123 | Response: / - Status: 200 - Time: 0.002s
+2025-10-03 08:03:43 | INFO     | app | log_app_info:123 | Request: GET /favicon.ico
+2025-10-03 08:03:43 | INFO     | app | log_app_info:123 | Response: /favicon.ico - Status: 404 - Time: 0.001s
+2025-10-03 08:03:52 | INFO     | app | log_app_info:123 | Request: GET /
+2025-10-03 08:03:52 | INFO     | app | log_app_info:123 | Root endpoint accessed
+2025-10-03 08:03:52 | INFO     | app | log_app_info:123 | Response: / - Status: 200 - Time: 0.002s
+2025-10-03 08:06:23 | INFO     | app | log_app_info:123 | Request: GET /health
+2025-10-03 08:06:23 | INFO     | app | log_app_info:123 | Health check - AI Available: True
+2025-10-03 08:06:23 | INFO     | app | log_app_info:123 | Response: /health - Status: 200 - Time: 0.001s
+2025-10-03 08:06:49 | INFO     | app | log_app_info:123 | Request: POST /analyze
+2025-10-03 08:06:49 | INFO     | app | log_app_info:123 | Response: /analyze - Status: 422 - Time: 0.001s
