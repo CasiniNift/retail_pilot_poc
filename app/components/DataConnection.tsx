@@ -88,22 +88,41 @@ export default function DataConnection({ onDataLoaded }: DataConnectionProps) {
     e.preventDefault();
     setUploading(true);
     setMessage(null);
-
+  
     try {
-      const response = await fetch('/api/connect', {
+      // Call Next.js API route instead of Python directly
+      const response = await fetch('/api/stripe-connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ provider, apiKey, startDate, endDate })
+        body: JSON.stringify({ 
+          apiKey, 
+          startDate, 
+          endDate 
+        })
       });
-
+  
       const data = await response.json();
-
-      if (!response.ok) {
+  
+      if (!response.ok || !data.success) {
         throw new Error(data.error || 'Connection failed');
       }
-
-      onDataLoaded(data.sessionId);
-      setMessage({ type: 'success', text: data.message || 'Connected successfully!' });
+  
+      // Update status
+      setDataStatus({
+        transactions: data.data.charges?.count > 0 ? `✅ ${data.data.charges.count} charges` : '❌ Not loaded',
+        refunds: data.data.refunds?.count > 0 ? `✅ ${data.data.refunds.count} refunds` : '❌ Not loaded',
+        payouts: data.data.payouts?.count > 0 ? `✅ ${data.data.payouts.count} payouts` : '❌ Not loaded',
+        products: '⚠️ N/A for Stripe',
+      });
+  
+      const sessionId = data.sessionId;
+      localStorage.setItem('cashflow_session_id', sessionId);
+      onDataLoaded(sessionId);
+      
+      setMessage({ 
+        type: 'success', 
+        text: `Connected successfully! Fetched ${data.data.charges?.count || 0} charges` 
+      });
       
     } catch (err) {
       setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Connection failed' });

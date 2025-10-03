@@ -138,3 +138,264 @@
 2025-10-03 10:01:20 | INFO     | app | log_app_info:123 | Fetched 0 payouts
 2025-10-03 10:01:20 | INFO     | app | log_app_info:123 | Stripe data fetch complete
 2025-10-03 10:01:20 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 200 - Time: 0.781s
+2025-10-03 12:58:50 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 12:58:50 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 200 - Time: 0.003s
+2025-10-03 12:58:50 | INFO     | app | log_app_info:123 | Request: POST /connect/stripe
+2025-10-03 12:58:50 | INFO     | app | log_app_info:123 | Stripe connection requested - Date range: 2025-01-01 to 2025-01-07
+2025-10-03 12:58:50 | INFO     | app | log_app_info:123 | Fetching Stripe data from 1735686000 to 1736204400
+2025-10-03 12:58:50 | INFO     | app | log_app_info:123 | Fetched 0 charges
+2025-10-03 12:58:50 | INFO     | app | log_app_info:123 | Fetched 0 refunds
+2025-10-03 12:58:51 | INFO     | app | log_app_info:123 | Fetched 0 payouts
+2025-10-03 12:58:51 | INFO     | app | log_app_info:123 | Stripe data fetch complete
+2025-10-03 12:58:51 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 200 - Time: 0.772s
+2025-10-03 12:58:57 | INFO     | app | log_app_info:123 | Request: POST /connect/stripe
+2025-10-03 12:58:57 | INFO     | app | log_app_info:123 | Stripe connection requested - Date range: 2025-01-01 to 2025-01-07
+2025-10-03 12:58:57 | INFO     | app | log_app_info:123 | Fetching Stripe data from 1735686000 to 1736204400
+2025-10-03 12:58:57 | INFO     | app | log_app_info:123 | Fetched 0 charges
+2025-10-03 12:58:57 | INFO     | app | log_app_info:123 | Fetched 0 refunds
+2025-10-03 12:58:57 | INFO     | app | log_app_info:123 | Fetched 0 payouts
+2025-10-03 12:58:57 | INFO     | app | log_app_info:123 | Stripe data fetch complete
+2025-10-03 12:58:57 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 200 - Time: 0.634s
+2025-10-03 13:27:44 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 13:27:44 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 200 - Time: 0.001s
+2025-10-03 13:27:44 | INFO     | app | log_app_info:123 | Request: POST /connect/stripe
+2025-10-03 13:27:44 | INFO     | app | log_app_info:123 | Stripe connection requested - Date range: 2025-01-01 to 2025-01-07
+2025-10-03 13:27:44 | INFO     | app | log_app_info:123 | Fetching Stripe data from 1735686000 to 1736204400
+2025-10-03 13:27:44 | INFO     | app | log_app_info:123 | Fetched 0 charges
+2025-10-03 13:27:44 | INFO     | app | log_app_info:123 | Fetched 0 refunds
+2025-10-03 13:27:44 | INFO     | app | log_app_info:123 | Fetched 0 payouts
+2025-10-03 13:27:44 | INFO     | app | log_app_info:123 | Stripe data fetch complete
+2025-10-03 13:27:44 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 200 - Time: 0.731s
+2025-10-03 13:28:25 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T13:28:31.900585
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 13:28:31 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:30:41 | INFO     | app | log_app_info:123 | Request: POST /connect/stripe
+2025-10-03 13:30:41 | INFO     | app | log_app_info:123 | Stripe connection requested - Date range: 2025-01-01 to 2025-01-07
+2025-10-03 13:30:41 | INFO     | app | log_app_info:123 | Fetching Stripe data from 1735686000 to 1736204400
+2025-10-03 13:30:42 | INFO     | app | log_app_info:123 | Fetched 0 charges
+2025-10-03 13:30:42 | INFO     | app | log_app_info:123 | Fetched 0 refunds
+2025-10-03 13:30:42 | INFO     | app | log_app_info:123 | Fetched 0 payouts
+2025-10-03 13:30:42 | INFO     | app | log_app_info:123 | Saved Stripe data to temp_data/stripe_1759491042434.json
+2025-10-03 13:30:42 | INFO     | app | log_app_info:123 | Stripe data fetch complete
+2025-10-03 13:30:42 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 200 - Time: 0.827s
+2025-10-03 13:32:03 | INFO     | app | log_app_info:123 | Request: POST /connect/stripe
+2025-10-03 13:32:03 | INFO     | app | log_app_info:123 | Stripe connection requested - Date range: 2025-01-01 to 2025-01-07
+2025-10-03 13:32:03 | INFO     | app | log_app_info:123 | Fetching Stripe data from 1735686000 to 1736204400
+2025-10-03 13:32:04 | INFO     | app | log_app_info:123 | Fetched 0 charges
+2025-10-03 13:32:04 | INFO     | app | log_app_info:123 | Fetched 0 refunds
+2025-10-03 13:32:04 | INFO     | app | log_app_info:123 | Fetched 0 payouts
+2025-10-03 13:32:04 | INFO     | app | log_app_info:123 | Saved Stripe data to temp_data/stripe_1759491124467.json
+2025-10-03 13:32:04 | INFO     | app | log_app_info:123 | Stripe data fetch complete
+2025-10-03 13:32:04 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 200 - Time: 0.699s
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T13:39:58.649973
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:39:58 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T13:40:45.053793
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:40:45 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T13:41:22.671887
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 13:41:22 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:42:20 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 13:42:20 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 400 - Time: 0.000s
+2025-10-03 13:44:17 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T13:44:55.248237
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 13:44:55 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:45:55 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 13:45:55 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 400 - Time: 0.002s
+2025-10-03 13:49:00 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T13:49:07.425054
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 13:49:07 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:51:54 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 13:51:54 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 400 - Time: 0.001s
+2025-10-03 13:55:24 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T13:55:35.843070
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 13:55:35 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:56:17 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 13:56:17 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 400 - Time: 0.002s
+2025-10-03 13:59:45 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T13:59:53.552444
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 13:59:53 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:01:21 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 14:01:21 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 400 - Time: 0.001s
+2025-10-03 14:02:06 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 14:02:06 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 400 - Time: 0.000s
+2025-10-03 14:02:10 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 14:02:10 | INFO     | app | log_app_info:123 | Response: /connect/stripe - Status: 400 - Time: 0.001s
+2025-10-03 14:03:33 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T14:03:39.093794
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 14:03:39 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:04:37 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 14:07:38 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T14:07:45.117911
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | CORS middleware configured for Next.js
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 14:07:45 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:08:37 | INFO     | app | log_app_info:123 | Request: OPTIONS /connect/stripe
+2025-10-03 14:15:50 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T14:15:57.888645
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 14:15:57 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 16:25:29 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T16:25:36.483555
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 16:25:36 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 16:28:24 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | AI Cash Flow Assistant - Retail Pilot STARTING
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | Logs directory: /Users/christiancasini/retail_pilot_poc/logs
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | Timestamp: 2025-10-03T16:28:30.730676
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | FastAPI application starting
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | Starting uvicorn server on port 8001
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI STARTED
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | AI Available: True
+2025-10-03 16:28:30 | INFO     | app | log_app_info:123 | ============================================================
+2025-10-03 16:29:21 | INFO     | app | log_app_info:123 | Stripe connection requested - Date range: 2025-01-01 to 2025-01-07
+2025-10-03 16:29:21 | INFO     | app | log_app_info:123 | Fetching Stripe data from 1735686000 to 1736204400
+2025-10-03 16:29:22 | INFO     | app | log_app_info:123 | Fetched 0 charges
+2025-10-03 16:29:22 | INFO     | app | log_app_info:123 | Fetched 0 refunds
+2025-10-03 16:29:22 | INFO     | app | log_app_info:123 | Fetched 0 payouts
+2025-10-03 16:29:22 | INFO     | app | log_app_info:123 | Saved Stripe data to /Users/christiancasini/retail_pilot_poc/temp_data/stripe_1759501762776.json
+2025-10-03 16:29:22 | INFO     | app | log_app_info:123 | Stripe data fetch complete
+2025-10-03 16:31:15 | INFO     | app | log_app_info:123 | Cash Flow AI Service - FastAPI SHUTTING DOWN

@@ -64,3 +64,5 @@ data/*.csv
 .DS_Store
 Thumbs.db
 test_stripe*.py
+.env.local
+.env

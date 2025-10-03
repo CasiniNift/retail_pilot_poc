@@ -1,7 +1,7 @@
 # python-service/main.py with comprehensive logging
-from ai_assistant import CashFlowAIAssistant
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List, Dict, Any
 import sys
@@ -9,10 +9,15 @@ import os
 import time
 import stripe
 from datetime import datetime
+from pathlib import Path
 
 # Add parent directory to path to import from python-service
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+from ai_assistant import CashFlowAIAssistant
+
+# Define project root (one level up from python-service)
+PROJECT_ROOT = Path(__file__).parent.parent
 
 # Import logger
 try:
@@ -36,41 +41,33 @@ app = FastAPI(title="Cash Flow AI Service")
 
 log_app_info("FastAPI application starting")
 
-# CORS for Next.js
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-log_app_info("CORS middleware configured for Next.js")
+@app.middleware("http")
+async def add_cors_headers(request: Request, call_next):
+    """Manual CORS handler"""
+    
+    # Handle preflight requests
+    if request.method == "OPTIONS":
+        return JSONResponse(
+            content={},
+            headers={
+                "Access-Control-Allow-Origin": "http://localhost:3000",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Credentials": "true",
+            }
+        )
+    
+    # Process the request
+    response = await call_next(request)
+    
+    # Add CORS headers to response
+    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    
+    return response
 
 # Initialize your existing AI assistant
 ai_assistant = CashFlowAIAssistant()
-
-# Middleware to log all requests
-
-
-@app.middleware("http")
-async def log_requests(request: Request, call_next):
-    """Log all incoming requests and responses"""
-    start_time = time.time()
-
-    log_app_info(f"Request: {request.method} {request.url.path}")
-
-    try:
-        response = await call_next(request)
-
-        process_time = time.time() - start_time
-        log_app_info(
-            f"Response: {request.url.path} - Status: {response.status_code} - Time: {process_time:.3f}s")
-
-        return response
-    except Exception as e:
-        log_error(f"Request failed: {request.url.path}", exc_info=True)
-        raise
 
 
 class AnalysisRequest(BaseModel):
@@ -174,10 +171,8 @@ async def connect_stripe(request: StripeConnectionRequest):
         f"Stripe connection requested - Date range: {request.start_date} to {request.end_date}")
 
     try:
-        # Set the API key
         stripe.api_key = request.api_key
 
-        # Convert dates to timestamps
         start_timestamp = int(datetime.strptime(
             request.start_date, "%Y-%m-%d").timestamp())
         end_timestamp = int(datetime.strptime(
@@ -186,7 +181,6 @@ async def connect_stripe(request: StripeConnectionRequest):
         log_app_info(
             f"Fetching Stripe data from {start_timestamp} to {end_timestamp}")
 
-        # Fetch data from Stripe
         data_summary = {
             "success": True,
             "date_range": {
@@ -241,22 +235,55 @@ async def connect_stripe(request: StripeConnectionRequest):
             log_error(f"Error fetching payouts: {e}", exc_info=True)
             data_summary["data"]["payouts"] = {"error": str(e)}
 
+        # Save to file for analysis
+        try:
+            import json
+
+            temp_dir = PROJECT_ROOT / "temp_data"
+            temp_dir.mkdir(exist_ok=True)
+
+            session_id = f"stripe_{int(time.time() * 1000)}"
+            file_path = temp_dir / f"{session_id}.json"
+
+            with open(file_path, 'w') as f:
+                json.dump(data_summary, f, indent=2)
+
+            log_app_info(f"Saved Stripe data to {file_path}")
+
+            data_summary["sessionId"] = session_id
+
+        except Exception as e:
+            log_error(f"Failed to save Stripe data: {e}", exc_info=True)
+
         log_app_info(f"Stripe data fetch complete")
 
-        return data_summary
+        # Return with explicit CORS headers
+        return JSONResponse(
+            content=data_summary,
+            headers={
+                "Access-Control-Allow-Origin": "http://localhost:3000",
+                "Access-Control-Allow-Credentials": "true",
+            }
+        )
 
     except stripe.error.AuthenticationError as e:
         log_error(f"Stripe authentication failed: {e}", exc_info=True)
-        return {
-            "success": False,
-            "error": "Invalid Stripe API key"
-        }
+        return JSONResponse(
+            content={"success": False, "error": "Invalid Stripe API key"},
+            headers={
+                "Access-Control-Allow-Origin": "http://localhost:3000",
+                "Access-Control-Allow-Credentials": "true",
+            }
+        )
     except Exception as e:
         log_error(f"Stripe connection failed: {e}", exc_info=True)
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return JSONResponse(
+            content={"success": False, "error": str(e)},
+            headers={
+                "Access-Control-Allow-Origin": "http://localhost:3000",
+                "Access-Control-Allow-Credentials": "true",
+            }
+        )
 
 
 @app.on_event("startup")
