@@ -7,6 +7,8 @@ from typing import List, Dict, Any
 import sys
 import os
 import time
+import stripe
+from datetime import datetime
 
 # Add parent directory to path to import from python-service
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -81,6 +83,12 @@ class AnalysisRequest(BaseModel):
     analysisType: str  # 'cash_eaters', 'reorder', 'executive'
 
 
+class StripeConnectionRequest(BaseModel):
+    api_key: str
+    start_date: str  # Format: "YYYY-MM-DD"
+    end_date: str    # Format: "YYYY-MM-DD"
+
+
 @app.get("/")
 def root():
     log_app_info("Root endpoint accessed")
@@ -120,7 +128,6 @@ async def analyze(request: AnalysisRequest):
     try:
         if request.analysisType == "cash_eaters":
             log_app_info("Processing cash eaters analysis")
-            # Use your existing ai_assistant methods
             insights = ai_assistant.analyze_cash_eaters_insights(
                 request.cashEaters,
                 request.lowMarginProducts,
@@ -157,6 +164,99 @@ async def analyze(request: AnalysisRequest):
         log_error(
             f"Analysis failed for {request.analysisType}: {str(e)}", exc_info=True)
         return {"insights": f"<p>Error: {str(e)}</p>"}
+
+
+@app.post("/connect/stripe")
+async def connect_stripe(request: StripeConnectionRequest):
+    """Connect to Stripe and fetch data"""
+
+    log_app_info(
+        f"Stripe connection requested - Date range: {request.start_date} to {request.end_date}")
+
+    try:
+        # Set the API key
+        stripe.api_key = request.api_key
+
+        # Convert dates to timestamps
+        start_timestamp = int(datetime.strptime(
+            request.start_date, "%Y-%m-%d").timestamp())
+        end_timestamp = int(datetime.strptime(
+            request.end_date, "%Y-%m-%d").timestamp())
+
+        log_app_info(
+            f"Fetching Stripe data from {start_timestamp} to {end_timestamp}")
+
+        # Fetch data from Stripe
+        data_summary = {
+            "success": True,
+            "date_range": {
+                "start": request.start_date,
+                "end": request.end_date
+            },
+            "data": {}
+        }
+
+        # Fetch Charges
+        try:
+            charges = stripe.Charge.list(
+                created={"gte": start_timestamp, "lte": end_timestamp},
+                limit=100
+            )
+            data_summary["data"]["charges"] = {
+                "count": len(charges.data),
+                "total_amount": sum(charge.amount / 100 for charge in charges.data)
+            }
+            log_app_info(f"Fetched {len(charges.data)} charges")
+        except Exception as e:
+            log_error(f"Error fetching charges: {e}", exc_info=True)
+            data_summary["data"]["charges"] = {"error": str(e)}
+
+        # Fetch Refunds
+        try:
+            refunds = stripe.Refund.list(
+                created={"gte": start_timestamp, "lte": end_timestamp},
+                limit=100
+            )
+            data_summary["data"]["refunds"] = {
+                "count": len(refunds.data),
+                "total_amount": sum(refund.amount / 100 for refund in refunds.data)
+            }
+            log_app_info(f"Fetched {len(refunds.data)} refunds")
+        except Exception as e:
+            log_error(f"Error fetching refunds: {e}", exc_info=True)
+            data_summary["data"]["refunds"] = {"error": str(e)}
+
+        # Fetch Payouts
+        try:
+            payouts = stripe.Payout.list(
+                arrival_date={"gte": start_timestamp, "lte": end_timestamp},
+                limit=100
+            )
+            data_summary["data"]["payouts"] = {
+                "count": len(payouts.data),
+                "total_amount": sum(payout.amount / 100 for payout in payouts.data)
+            }
+            log_app_info(f"Fetched {len(payouts.data)} payouts")
+        except Exception as e:
+            log_error(f"Error fetching payouts: {e}", exc_info=True)
+            data_summary["data"]["payouts"] = {"error": str(e)}
+
+        log_app_info(f"Stripe data fetch complete")
+
+        return data_summary
+
+    except stripe.error.AuthenticationError as e:
+        log_error(f"Stripe authentication failed: {e}", exc_info=True)
+        return {
+            "success": False,
+            "error": "Invalid Stripe API key"
+        }
+    except Exception as e:
+        log_error(f"Stripe connection failed: {e}", exc_info=True)
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
 
 @app.on_event("startup")
