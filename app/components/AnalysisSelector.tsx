@@ -1,10 +1,7 @@
 // app/components/AnalysisSelector.tsx
 import type { AnalysisResult, BusinessSnapshot } from '@/lib/types';
-'use client';
-
 import { useState } from 'react';
 import ResultsDisplay from './ResultsDisplay';
-import type { AnalysisResult } from '@/lib/types';
 
 const QUESTIONS = [
   { id: 'cash_eaters', label: "What's eating my cash flow?" },
@@ -35,7 +32,7 @@ export default function AnalysisSelector() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sessionId,
-          question: selectedQuestion,
+          analysisType: selectedQuestion,  // ← Change "question" to "analysisType"
           budget: selectedQuestion === 'reorder' ? budget : undefined,
           language
         })
@@ -116,7 +113,7 @@ export default function AnalysisSelector() {
         </button>
       </div>
 
-      {result && <ResultsDisplay result={result} />}
+      {result && <ResultsDisplay result={result} questionId={selectedQuestion} />}
     </div>
   );
 }

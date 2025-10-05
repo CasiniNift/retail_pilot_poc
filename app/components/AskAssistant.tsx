@@ -73,7 +73,7 @@ export default function AskAssistant({ sessionId, hasData }: AskAssistantProps) 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sessionId,
-          question: questionId,
+          analysisType: questionId,
           budget: questionId === 'reorder' ? budget : undefined,
           language
         })

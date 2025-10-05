@@ -211,7 +211,7 @@ source python-service/venv/bin/activate
 
 # Start the Python service
 cd python-service
-python main.py
+python3 main.py
 ```
 
 The Python service will run at http://localhost:8001

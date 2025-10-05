@@ -1,1 +1,2 @@
 2025-10-03 08:00:19 | INFO     | ai | log_ai_call:118 | SUCCESS | Question: Test question | Language: English | Tokens: 100
+2025-10-05 22:32:34 | INFO     | ai | log_ai_call:118 | SUCCESS | Question: cash_eaters | Language: detected from prompt | Tokens: 767

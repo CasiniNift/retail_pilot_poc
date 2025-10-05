@@ -1,318 +1,332 @@
-# python-service/main.py with comprehensive logging
-from fastapi import FastAPI, Request
+# python-service/main.py
+from ai_assistant import CashFlowAIAssistant
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from typing import List, Dict, Any
+from pydantic import BaseModel, ValidationError
+from typing import List, Optional, Dict, Any
 import sys
 import os
-import time
-import stripe
-from datetime import datetime
-from pathlib import Path
 
-# Add parent directory to path to import from python-service
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from ai_assistant import CashFlowAIAssistant
-
-# Define project root (one level up from python-service)
-PROJECT_ROOT = Path(__file__).parent.parent
-
-# Import logger
-try:
-    from logger import (
-        initialize_logging,
-        log_app_info,
-        log_app_warning,
-        log_error,
-        log_exceptions
-    )
-    LOGGING_AVAILABLE = True
-    initialize_logging()
-except ImportError:
-    LOGGING_AVAILABLE = False
-    def log_app_info(*args, **kwargs): pass
-    def log_app_warning(*args, **kwargs): pass
-    def log_error(*args, **kwargs): pass
-    def log_exceptions(): return lambda f: f
+# Add parent src to path
+sys.path.append('../src')
 
 app = FastAPI(title="Cash Flow AI Service")
 
-log_app_info("FastAPI application starting")
+# CORS for Next.js
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.middleware("http")
-async def add_cors_headers(request: Request, call_next):
-    """Manual CORS handler"""
-    
-    # Handle preflight requests
-    if request.method == "OPTIONS":
-        return JSONResponse(
-            content={},
-            headers={
-                "Access-Control-Allow-Origin": "http://localhost:3000",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type, Authorization",
-                "Access-Control-Allow-Credentials": "true",
-            }
-        )
-    
-    # Process the request
-    response = await call_next(request)
-    
-    # Add CORS headers to response
-    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    
-    return response
+# Custom validation error handler to see what's wrong
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    print("=" * 60)
+    print("VALIDATION ERROR!")
+    print(f"Request body: {await request.body()}")
+    print(f"Errors: {exc.errors()}")
+    print("=" * 60)
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors(), "body": str(await request.body())}
+    )
 
-# Initialize your existing AI assistant
+# Initialize AI assistant
 ai_assistant = CashFlowAIAssistant()
 
 
-class AnalysisRequest(BaseModel):
-    cashEaters: List[Dict[str, Any]] = []
-    lowMarginProducts: List[Dict[str, Any]] = []
-    reorderPlan: List[Dict[str, Any]] = []
-    snapshot: Dict[str, Any] = {}
-    budget: float = 0
+# ============= REQUEST MODELS =============
+
+class GeneralAnalysisRequest(BaseModel):
+    """Request model matching what Next.js sends"""
+    analysisType: str
     language: str = "English"
-    analysisType: str  # 'cash_eaters', 'reorder', 'executive'
+    budget: float = 500.0
+    snapshot: Dict[str, Any]
+    cashEaters: List[Dict] = []
+    lowMarginProducts: List[Dict] = []
+    reorderPlan: List[Dict] = []
 
 
-class StripeConnectionRequest(BaseModel):
-    api_key: str
-    start_date: str  # Format: "YYYY-MM-DD"
-    end_date: str    # Format: "YYYY-MM-DD"
+class CashEaterRequest(BaseModel):
+    cashEaters: List[dict]
+    lowMarginProducts: List[dict]
+    language: str = "English"
 
 
-@app.get("/")
-def root():
-    log_app_info("Root endpoint accessed")
-    return {
-        "service": "Cash Flow AI Assistant",
-        "status": "running",
-        "claude_available": ai_assistant.is_available()
-    }
+class ReorderRequest(BaseModel):
+    reorderPlan: List[dict]
+    budget: float
+    language: str = "English"
+
+
+# ============= ENDPOINTS =============
+
+@app.post("/analyze")
+async def analyze_general(request: GeneralAnalysisRequest):
+    """
+    General analysis endpoint that Next.js calls
+    Receives pre-parsed data from Next.js
+    """
+    # Log what we received
+    print("=" * 60)
+    print("RECEIVED REQUEST:")
+    print(f"analysisType: {request.analysisType}")
+    print(f"language: {request.language}")
+    print(f"budget: {request.budget}")
+    print(f"snapshot keys: {request.snapshot.keys() if request.snapshot else 'None'}")
+    print("=" * 60)
+    
+    try:
+        # Data is already parsed and sent in the request
+        data = request.snapshot
+        
+        # Calculate snapshot (basic stats)
+        snapshot = calculate_snapshot(data)
+        result = {"snapshot": snapshot}
+        
+        # Determine which analysis to run based on analysisType
+        if request.analysisType == "cash_eaters":
+            cash_eaters, low_margin = analyze_cash_eaters_data(data)
+            result["cashEaters"] = cash_eaters
+            result["lowMarginProducts"] = low_margin
+            
+            # Generate AI insights
+            context = format_business_context(snapshot, cash_eaters, low_margin)
+            ai_insights = ai_assistant.analyze_cash_eaters(
+                context,
+                {
+                    'discounts': sum(ce['amount'] for ce in cash_eaters if ce['category'] == 'Discounts'),
+                    'refunds': sum(ce['amount'] for ce in cash_eaters if ce['category'] == 'Refunds'),
+                    'processor_fees': sum(ce['amount'] for ce in cash_eaters if ce['category'] == 'Processor fees'),
+                    'low_margin_products': str(low_margin[:5])  # Top 5
+                },
+                language=request.language.lower()
+            )
+            result["aiInsights"] = ai_insights
+            
+        elif request.analysisType == "reorder":
+            reorder_plan = generate_reorder_plan_data(data, request.budget)
+            result["reorderPlan"] = reorder_plan
+            result["message"] = f"Budget: €{request.budget} planned"
+            
+            # Generate AI insights
+            context = format_business_context(snapshot)
+            ai_insights = ai_assistant.analyze_reorder_plan(
+                context,
+                {'purchase_plan': str(reorder_plan)},
+                request.budget,
+                language=request.language.lower()
+            )
+            result["aiInsights"] = ai_insights
+        
+        return result
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+
+@app.post("/analyze/cash-eaters")
+async def analyze_cash_eaters(request: CashEaterRequest):
+    """Specific endpoint for cash eaters analysis with pre-formatted data"""
+    context = f"""
+    Cash Eaters Analysis:
+    {request.cashEaters}
+    
+    Low Margin Products:
+    {request.lowMarginProducts}
+    """
+
+    insights = ai_assistant.analyze_cash_eaters(
+        context,
+        language=request.language
+    )
+
+    return {"insights": insights}
+
+
+@app.post("/analyze/reorder")
+async def analyze_reorder(request: ReorderRequest):
+    """Specific endpoint for reorder plan analysis"""
+    context = f"""
+    Reorder Plan (Budget: €{request.budget}):
+    {request.reorderPlan}
+    """
+
+    insights = ai_assistant.analyze_reorder_plan(
+        context,
+        language=request.language
+    )
+
+    return {"insights": insights}
 
 
 @app.get("/health")
-def health_check():
-    ai_available = ai_assistant.is_available()
-    log_app_info(f"Health check - AI Available: {ai_available}")
-
+async def health_check():
     return {
         "status": "healthy",
-        "claude_available": ai_available
+        "ai_available": ai_assistant.is_available()
     }
 
 
-@app.post("/analyze")
-@log_exceptions()
-async def analyze(request: AnalysisRequest):
-    """Universal endpoint that routes to appropriate analysis"""
+# ============= HELPER FUNCTIONS =============
 
-    log_app_info(
-        f"Analysis request - Type: {request.analysisType}, Language: {request.language}")
+def calculate_snapshot(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Calculate business snapshot from transaction data"""
+    transactions = data.get('transactions', [])
+    refunds = data.get('refunds', [])
+    payouts = data.get('payouts', [])
+    
+    card_sales = sum(t.get('net_sales', 0) for t in transactions if t.get('payment_type') == 'card')
+    cash_sales = sum(t.get('net_sales', 0) for t in transactions if t.get('payment_type') == 'cash')
+    
+    return {
+        'totalTransactions': len(set(t.get('transaction_id') for t in transactions)),
+        'itemsSold': sum(t.get('quantity', 0) for t in transactions),
+        'grossSales': sum(t.get('gross_sales', 0) for t in transactions),
+        'discounts': sum(t.get('discount', 0) for t in transactions),
+        'cardSales': card_sales,
+        'cashSales': cash_sales,
+        'processorFees': sum(p.get('processor_fees', 0) for p in payouts),
+        'refunds': sum(r.get('refund_amount', 0) for r in refunds)
+    }
 
-    if not ai_assistant.is_available():
-        log_app_warning(
-            f"Analysis requested but AI not available - Type: {request.analysisType}")
-        return {
-            "insights": "<p>⚠️ AI service not available. Please set ANTHROPIC_API_KEY environment variable.</p>"
+
+def analyze_cash_eaters_data(data: Dict[str, Any]):
+    """Analyze what's eating cash flow"""
+    transactions = data.get('transactions', [])
+    refunds = data.get('refunds', [])
+    payouts = data.get('payouts', [])
+    
+    total_discounts = sum(t.get('discount', 0) for t in transactions)
+    total_refunds = sum(r.get('refund_amount', 0) for r in refunds)
+    total_fees = sum(p.get('processor_fees', 0) for p in payouts)
+    total = total_discounts + total_refunds + total_fees
+    
+    cash_eaters = [
+        {
+            'category': 'Discounts',
+            'amount': total_discounts,
+            'percentage': (total_discounts / total * 100) if total > 0 else 0
+        },
+        {
+            'category': 'Refunds',
+            'amount': total_refunds,
+            'percentage': (total_refunds / total * 100) if total > 0 else 0
+        },
+        {
+            'category': 'Processor fees',
+            'amount': total_fees,
+            'percentage': (total_fees / total * 100) if total > 0 else 0
         }
-
-    try:
-        if request.analysisType == "cash_eaters":
-            log_app_info("Processing cash eaters analysis")
-            insights = ai_assistant.analyze_cash_eaters_insights(
-                request.cashEaters,
-                request.lowMarginProducts,
-                request.language
-            )
-            log_app_info("Cash eaters analysis completed successfully")
-
-        elif request.analysisType == "reorder":
-            log_app_info(
-                f"Processing reorder analysis - Budget: €{request.budget}")
-            insights = ai_assistant.analyze_reorder_insights(
-                request.reorderPlan,
-                request.budget,
-                request.language
-            )
-            log_app_info("Reorder analysis completed successfully")
-
-        elif request.analysisType == "executive":
-            log_app_info("Processing executive summary analysis")
-            insights = ai_assistant.analyze_executive_insights(
-                request.snapshot,
-                request.language
-            )
-            log_app_info("Executive summary completed successfully")
-
-        else:
-            log_app_warning(
-                f"Unknown analysis type requested: {request.analysisType}")
-            insights = "<p>Unknown analysis type</p>"
-
-        return {"insights": insights}
-
-    except Exception as e:
-        log_error(
-            f"Analysis failed for {request.analysisType}: {str(e)}", exc_info=True)
-        return {"insights": f"<p>Error: {str(e)}</p>"}
-
-
-@app.post("/connect/stripe")
-async def connect_stripe(request: StripeConnectionRequest):
-    """Connect to Stripe and fetch data"""
-
-    log_app_info(
-        f"Stripe connection requested - Date range: {request.start_date} to {request.end_date}")
-
-    try:
-        stripe.api_key = request.api_key
-
-        start_timestamp = int(datetime.strptime(
-            request.start_date, "%Y-%m-%d").timestamp())
-        end_timestamp = int(datetime.strptime(
-            request.end_date, "%Y-%m-%d").timestamp())
-
-        log_app_info(
-            f"Fetching Stripe data from {start_timestamp} to {end_timestamp}")
-
-        data_summary = {
-            "success": True,
-            "date_range": {
-                "start": request.start_date,
-                "end": request.end_date
-            },
-            "data": {}
-        }
-
-        # Fetch Charges
-        try:
-            charges = stripe.Charge.list(
-                created={"gte": start_timestamp, "lte": end_timestamp},
-                limit=100
-            )
-            data_summary["data"]["charges"] = {
-                "count": len(charges.data),
-                "total_amount": sum(charge.amount / 100 for charge in charges.data)
+    ]
+    cash_eaters.sort(key=lambda x: x['amount'], reverse=True)
+    
+    # Calculate low margin products
+    product_stats = {}
+    for t in transactions:
+        pid = t.get('product_id')
+        if pid not in product_stats:
+            product_stats[pid] = {
+                'product_id': pid,
+                'product_name': t.get('product_name', 'Unknown'),
+                'revenue': 0,
+                'gross_profit': 0
             }
-            log_app_info(f"Fetched {len(charges.data)} charges")
-        except Exception as e:
-            log_error(f"Error fetching charges: {e}", exc_info=True)
-            data_summary["data"]["charges"] = {"error": str(e)}
+        product_stats[pid]['revenue'] += t.get('net_sales', 0)
+        product_stats[pid]['gross_profit'] += t.get('gross_profit', 0)
+    
+    low_margin = []
+    for stats in product_stats.values():
+        if stats['revenue'] > 0:
+            margin_pct = stats['gross_profit'] / stats['revenue']
+            low_margin.append({
+                **stats,
+                'margin_pct': margin_pct
+            })
+    
+    low_margin.sort(key=lambda x: x['margin_pct'])
+    
+    return cash_eaters, low_margin[:10]  # Top 10 lowest margin
 
-        # Fetch Refunds
-        try:
-            refunds = stripe.Refund.list(
-                created={"gte": start_timestamp, "lte": end_timestamp},
-                limit=100
-            )
-            data_summary["data"]["refunds"] = {
-                "count": len(refunds.data),
-                "total_amount": sum(refund.amount / 100 for refund in refunds.data)
+
+def generate_reorder_plan_data(data: Dict[str, Any], budget: float):
+    """Generate simple reorder recommendations"""
+    transactions = data.get('transactions', [])
+    
+    # Simple logic: recommend top-selling products that fit in budget
+    product_sales = {}
+    for t in transactions:
+        pid = t.get('product_id')
+        if pid not in product_sales:
+            product_sales[pid] = {
+                'product_id': pid,
+                'product_name': t.get('product_name', 'Unknown'),
+                'quantity_sold': 0,
+                'avg_price': t.get('unit_price', 0)
             }
-            log_app_info(f"Fetched {len(refunds.data)} refunds")
-        except Exception as e:
-            log_error(f"Error fetching refunds: {e}", exc_info=True)
-            data_summary["data"]["refunds"] = {"error": str(e)}
-
-        # Fetch Payouts
-        try:
-            payouts = stripe.Payout.list(
-                arrival_date={"gte": start_timestamp, "lte": end_timestamp},
-                limit=100
-            )
-            data_summary["data"]["payouts"] = {
-                "count": len(payouts.data),
-                "total_amount": sum(payout.amount / 100 for payout in payouts.data)
-            }
-            log_app_info(f"Fetched {len(payouts.data)} payouts")
-        except Exception as e:
-            log_error(f"Error fetching payouts: {e}", exc_info=True)
-            data_summary["data"]["payouts"] = {"error": str(e)}
-
-        # Save to file for analysis
-        try:
-            import json
-
-            temp_dir = PROJECT_ROOT / "temp_data"
-            temp_dir.mkdir(exist_ok=True)
-
-            session_id = f"stripe_{int(time.time() * 1000)}"
-            file_path = temp_dir / f"{session_id}.json"
-
-            with open(file_path, 'w') as f:
-                json.dump(data_summary, f, indent=2)
-
-            log_app_info(f"Saved Stripe data to {file_path}")
-
-            data_summary["sessionId"] = session_id
-
-        except Exception as e:
-            log_error(f"Failed to save Stripe data: {e}", exc_info=True)
-
-        log_app_info(f"Stripe data fetch complete")
-
-        # Return with explicit CORS headers
-        return JSONResponse(
-            content=data_summary,
-            headers={
-                "Access-Control-Allow-Origin": "http://localhost:3000",
-                "Access-Control-Allow-Credentials": "true",
-            }
-        )
-
-    except stripe.error.AuthenticationError as e:
-        log_error(f"Stripe authentication failed: {e}", exc_info=True)
-        return JSONResponse(
-            content={"success": False, "error": "Invalid Stripe API key"},
-            headers={
-                "Access-Control-Allow-Origin": "http://localhost:3000",
-                "Access-Control-Allow-Credentials": "true",
-            }
-        )
-    except Exception as e:
-        log_error(f"Stripe connection failed: {e}", exc_info=True)
-        return JSONResponse(
-            content={"success": False, "error": str(e)},
-            headers={
-                "Access-Control-Allow-Origin": "http://localhost:3000",
-                "Access-Control-Allow-Credentials": "true",
-            }
-        )
+        product_sales[pid]['quantity_sold'] += t.get('quantity', 0)
+    
+    # Sort by quantity sold
+    top_products = sorted(product_sales.values(), key=lambda x: x['quantity_sold'], reverse=True)
+    
+    # Create reorder plan within budget
+    plan = []
+    remaining = budget
+    
+    for product in top_products[:5]:  # Top 5 products
+        suggested_qty = max(5, product['quantity_sold'] // 10)  # Suggest 10% of sales volume
+        cost = suggested_qty * product['avg_price'] * 0.6  # Assume 40% markup
+        
+        if cost <= remaining:
+            plan.append({
+                'product_name': product['product_name'],
+                'quantity': suggested_qty,
+                'estimated_cost': round(cost, 2),
+                'expected_revenue': round(suggested_qty * product['avg_price'], 2)
+            })
+            remaining -= cost
+        
+        if remaining < 50:  # Stop if less than €50 left
+            break
+    
+    return plan
 
 
-@app.on_event("startup")
-async def startup_event():
-    """Log startup event"""
-    log_app_info("=" * 60)
-    log_app_info("Cash Flow AI Service - FastAPI STARTED")
-    log_app_info(f"AI Available: {ai_assistant.is_available()}")
-    log_app_info("=" * 60)
+def format_business_context(snapshot: Dict[str, Any], cash_eaters=None, low_margin=None) -> str:
+    """Format business data for AI context"""
+    context = f"""
+    Business Snapshot:
+    - Total Sales: €{snapshot['grossSales']:.2f}
+    - Transactions: {snapshot['totalTransactions']}
+    - Items Sold: {snapshot['itemsSold']}
+    - Discounts: €{snapshot['discounts']:.2f}
+    - Refunds: €{snapshot['refunds']:.2f}
+    - Processor Fees: €{snapshot['processorFees']:.2f}
+    """
+    
+    if cash_eaters:
+        context += f"\n\nTop Cash Drains:\n"
+        for ce in cash_eaters[:3]:
+            context += f"- {ce['category']}: €{ce['amount']:.2f} ({ce['percentage']:.1f}%)\n"
+    
+    if low_margin:
+        context += f"\n\nLowest Margin Products:\n"
+        for p in low_margin[:5]:
+            context += f"- {p['product_name']}: {p['margin_pct']*100:.1f}% margin\n"
+    
+    return context
 
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Log shutdown event"""
-    log_app_info("Cash Flow AI Service - FastAPI SHUTTING DOWN")
-
+# ============= STARTUP =============
 
 if __name__ == "__main__":
     import uvicorn
-
-    print("🚀 Starting Cash Flow AI Service")
-    print(
-        f"📊 Claude API: {'✅ Connected' if ai_assistant.is_available() else '❌ Not configured'}")
-    print("🌐 http://localhost:8001")
-
-    log_app_info("Starting uvicorn server on port 8001")
-
-    try:
-        uvicorn.run(app, host="0.0.0.0", port=8001)
-    except Exception as e:
-        log_error(f"Failed to start uvicorn: {e}", exc_info=True)
-        raise
+    print("Starting Cash Flow AI Service on port 8001...")
+    print(f"AI Available: {ai_assistant.is_available()}")
+    uvicorn.run(app, host="0.0.0.0", port=8001)
