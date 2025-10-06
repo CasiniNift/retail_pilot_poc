@@ -4,3 +4,8 @@
 2025-10-06 10:04:59 | INFO     | ai | log_ai_call:118 | SUCCESS | Question: cash_eaters | Language: detected from prompt | Tokens: 1477
 2025-10-06 10:06:01 | INFO     | ai | log_ai_call:118 | SUCCESS | Question: cash_eaters | Language: detected from prompt | Tokens: 1466
 2025-10-06 10:10:59 | INFO     | ai | log_ai_call:118 | SUCCESS | Question: cash_eaters | Language: detected from prompt | Tokens: 1416
+2025-10-06 10:17:39 | INFO     | ai | log_ai_call:118 | SUCCESS | Question: cash_eaters | Language: detected from prompt | Tokens: 1461
+2025-10-06 10:17:47 | INFO     | ai | log_ai_call:118 | SUCCESS | Question: reorder_plan | Language: detected from prompt | Tokens: 668
+2025-10-06 10:20:43 | INFO     | ai | log_ai_call:118 | SUCCESS | Question: reorder_plan | Language: detected from prompt | Tokens: 742
+2025-10-06 10:31:22 | INFO     | ai | log_ai_call:118 | SUCCESS | Question: cash_eaters | Language: detected from prompt | Tokens: 1424
+2025-10-06 10:31:31 | INFO     | ai | log_ai_call:118 | SUCCESS | Question: reorder_plan | Language: detected from prompt | Tokens: 710

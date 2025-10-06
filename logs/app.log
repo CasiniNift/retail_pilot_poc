@@ -471,3 +471,22 @@
 2025-10-06 10:10:55 | INFO     | app | log_app_info:123 | Cash eaters analysis (original) - Language: english
 2025-10-06 10:10:55 | INFO     | app | log_app_info:123 | Making Claude API request - Type: cash_eaters, Max tokens: 600
 2025-10-06 10:10:59 | INFO     | app | log_app_info:123 | Claude API request successful - 1416 tokens used
+2025-10-06 10:17:35 | INFO     | app | log_app_info:123 | Cash eaters analysis (original) - Language: english
+2025-10-06 10:17:35 | INFO     | app | log_app_info:123 | Making Claude API request - Type: cash_eaters, Max tokens: 600
+2025-10-06 10:17:39 | INFO     | app | log_app_info:123 | Claude API request successful - 1461 tokens used
+2025-10-06 10:17:43 | INFO     | app | log_app_info:123 | Reorder analysis (original) - Budget: €500.0, Language: english
+2025-10-06 10:17:43 | INFO     | app | log_app_info:123 | Making Claude API request - Type: reorder_plan, Max tokens: 600
+2025-10-06 10:17:47 | INFO     | app | log_app_info:123 | Claude API request successful - 668 tokens used
+2025-10-06 10:20:39 | INFO     | app | log_app_info:123 | Reorder analysis (original) - Budget: €350.0, Language: english
+2025-10-06 10:20:39 | INFO     | app | log_app_info:123 | Making Claude API request - Type: reorder_plan, Max tokens: 600
+2025-10-06 10:20:43 | INFO     | app | log_app_info:123 | Claude API request successful - 742 tokens used
+2025-10-06 10:29:49 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-06 10:29:49 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-06 10:31:18 | INFO     | app | log_app_info:123 | Cash eaters analysis (original) - Language: english
+2025-10-06 10:31:18 | INFO     | app | log_app_info:123 | Making Claude API request - Type: cash_eaters, Max tokens: 600
+2025-10-06 10:31:22 | INFO     | app | log_app_info:123 | Claude API request successful - 1424 tokens used
+2025-10-06 10:31:26 | INFO     | app | log_app_info:123 | Reorder analysis (original) - Budget: €500.0, Language: english
+2025-10-06 10:31:26 | INFO     | app | log_app_info:123 | Making Claude API request - Type: reorder_plan, Max tokens: 600
+2025-10-06 10:31:31 | INFO     | app | log_app_info:123 | Claude API request successful - 710 tokens used
+2025-10-06 10:47:48 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-06 10:47:48 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully

@@ -244,6 +244,37 @@ export async function POST(request: NextRequest) {
       } catch (err) {
         console.error('Failed to get reorder AI insights:', err);
       }
+    
+    } else if (question === 'free_cash') {
+      // Placeholder for cash liberation analysis
+      result.message = 'Cash Liberation Analysis';
+      result.aiInsights = `
+        <div class="space-y-4">
+          <h4 class="font-semibold text-gray-900 text-lg">Cash Liberation Feature - Coming Soon</h4>
+          
+          <p class="mb-3">
+            This feature will analyze your slow-moving inventory to estimate how much cash you can free up 
+            through strategic discounting and clearance sales.
+          </p>
+          
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3">
+            <h5 class="font-semibold text-blue-900 mb-2">What this feature will do:</h5>
+            <ul class="list-disc ml-6 space-y-1">
+              <li>Identify products with low sales velocity</li>
+              <li>Calculate potential cash inflow from discounted clearance</li>
+              <li>Recommend optimal discount percentages</li>
+              <li>Estimate timeline for inventory turnover</li>
+              <li>Suggest reinvestment strategies for freed capital</li>
+            </ul>
+          </div>
+          
+          <p class="mb-3">
+            <strong>In the meantime:</strong> Review your inventory manually to identify items that haven't 
+            sold in the last 30-60 days. Consider offering 15-25% discounts on these items to accelerate 
+            cash conversion.
+          </p>
+        </div>
+      `;
     }
 
     return NextResponse.json(result);
