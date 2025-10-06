@@ -453,3 +453,10 @@
 2025-10-06 07:22:33 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
 2025-10-06 07:23:51 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
 2025-10-06 07:23:51 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-06 09:33:06 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-06 09:33:06 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-06 09:45:55 | INFO     | app | log_app_info:123 | Claude API key found in ANTHROPIC_API_KEY
+2025-10-06 09:45:55 | INFO     | app | log_app_info:123 | Claude AI client initialized successfully
+2025-10-06 09:46:56 | INFO     | app | log_app_info:123 | Cash eaters analysis (original) - Language: english
+2025-10-06 09:46:56 | INFO     | app | log_app_info:123 | Making Claude API request - Type: cash_eaters, Max tokens: 600
+2025-10-06 09:47:00 | INFO     | app | log_app_info:123 | Claude API request successful - 1406 tokens used

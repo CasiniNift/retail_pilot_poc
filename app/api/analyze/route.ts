@@ -40,18 +40,18 @@ function calculateSnapshot(data: CashFlowData) {
 function analyzeCashEaters(data: CashFlowData) {
   const { transactions = [], refunds = [], payouts = [] } = data;
 
-  const totalDiscounts = transactions.reduce((sum, t) => sum + t.discount, 0);
-  const totalRefunds = refunds.reduce((sum, r) => sum + r.refund_amount, 0);
-  const totalFees = payouts.reduce((sum, p) => sum + p.processor_fees, 0);
+  const totalDiscounts = transactions.reduce((sum, t) => sum + (t.discount || 0), 0);
+  const totalRefunds = refunds.reduce((sum, r) => sum + (r.refund_amount || 0), 0);
+  const totalFees = payouts.reduce((sum, p) => sum + (p.processor_fees || 0), 0);
   const total = totalDiscounts + totalRefunds + totalFees;
 
   const cashEaters: CashEater[] = [
-    { category: 'Discounts', amount: totalDiscounts, percentage: (totalDiscounts / total) * 100 },
-    { category: 'Refunds', amount: totalRefunds, percentage: (totalRefunds / total) * 100 },
-    { category: 'Processor fees', amount: totalFees, percentage: (totalFees / total) * 100 }
+    { category: 'Discounts', amount: totalDiscounts, percentage: total > 0 ? (totalDiscounts / total) * 100 : 0 },
+    { category: 'Refunds', amount: totalRefunds, percentage: total > 0 ? (totalRefunds / total) * 100 : 0 },
+    { category: 'Processor fees', amount: totalFees, percentage: total > 0 ? (totalFees / total) * 100 : 0 }
   ].sort((a, b) => b.amount - a.amount);
 
-  // Low margin products
+  // Low margin products - with null checks
   const productStats = new Map<string, {
     revenue: number;
     gross_profit: number;
@@ -59,6 +59,8 @@ function analyzeCashEaters(data: CashFlowData) {
   }>();
   
   transactions.forEach(t => {
+    if (!t.product_id || !t.product_name) return;
+    
     const existing = productStats.get(t.product_id) || {
       revenue: 0,
       gross_profit: 0,
@@ -66,8 +68,8 @@ function analyzeCashEaters(data: CashFlowData) {
     };
     
     productStats.set(t.product_id, {
-      revenue: existing.revenue + t.net_sales,
-      gross_profit: existing.gross_profit + t.gross_profit,
+      revenue: existing.revenue + (t.net_sales || 0),
+      gross_profit: existing.gross_profit + (t.gross_profit || 0),
       product_name: t.product_name
     });
   });
@@ -160,7 +162,7 @@ function generateReorderPlan(data: CashFlowData, budget: number): ReorderItem[] 
 
 export async function POST(request: NextRequest) {
   try {
-    // ✅ Accept BOTH 'question' and 'analysisType' for compatibility
+    // Accept BOTH 'question' and 'analysisType' for compatibility
     const body = await request.json();
     const { sessionId, budget, language } = body;
     
@@ -186,19 +188,7 @@ export async function POST(request: NextRequest) {
     const dataStr = await readFile(dataPath, 'utf-8');
     const data: CashFlowData = JSON.parse(dataStr);
 
-    // 🔍 DEBUG: Log the loaded data
-    console.log('📊 Data loaded:', {
-      transactions: data.transactions?.length || 0,
-      refunds: data.refunds?.length || 0,
-      payouts: data.payouts?.length || 0,
-      products: data.products?.length || 0
-    });
-
     const snapshot = calculateSnapshot(data);
-    
-    // 🔍 DEBUG: Log the calculated snapshot
-    console.log('📈 Snapshot calculated:', snapshot);
-    
     let result: AnalysisResult = { snapshot };
 
     // Run analysis based on question
@@ -207,16 +197,53 @@ export async function POST(request: NextRequest) {
       result.cashEaters = cashEaters;
       result.lowMarginProducts = lowMarginProducts;
 
-      // Simplified AI insights (you can connect to Python service later)
-      result.aiInsights = `
-        <h4>🤖 AI Analysis</h4>
-        <p><strong>Biggest cash drain:</strong> ${cashEaters[0].category} (€${cashEaters[0].amount.toFixed(2)})</p>
-        <p><strong>Quick win:</strong> Review ${lowMarginProducts[0]?.product_name} pricing - only ${(lowMarginProducts[0]?.margin_pct * 100).toFixed(1)}% margin</p>
-      `;
+      // Call Python service for AI analysis
+      try {
+        const pythonResponse = await fetch('http://localhost:8001/analyze/cash-eaters', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cashEaters,
+            lowMarginProducts,
+            language: language || 'English'
+          })
+        });
+
+        if (pythonResponse.ok) {
+          const aiData = await pythonResponse.json();
+          result.aiInsights = aiData.insights;
+        } else {
+          console.error('Python service returned error:', pythonResponse.status);
+          result.aiInsights = '<p class="text-gray-600"><strong>AI analysis unavailable.</strong> Make sure the Python service is running: <code>cd python-service && python3 main.py</code></p>';
+        }
+      } catch (err) {
+        console.error('Failed to connect to Python service:', err);
+        result.aiInsights = '<p class="text-gray-600"><strong>AI analysis unavailable.</strong> Make sure the Python service is running on port 8001.</p>';
+      }
 
     } else if (question === 'reorder') {
       result.reorderPlan = generateReorderPlan(data, budget || 500);
       result.message = `Budget: €${budget} planned`;
+      
+      // Call Python service for reorder AI analysis
+      try {
+        const pythonResponse = await fetch('http://localhost:8001/analyze/reorder', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            reorderPlan: result.reorderPlan,
+            budget: budget || 500,
+            language: language || 'English'
+          })
+        });
+
+        if (pythonResponse.ok) {
+          const aiData = await pythonResponse.json();
+          result.aiInsights = aiData.insights;
+        }
+      } catch (err) {
+        console.error('Failed to get reorder AI insights:', err);
+      }
     }
 
     return NextResponse.json(result);
