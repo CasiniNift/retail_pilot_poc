@@ -5,6 +5,7 @@ import anthropic
 from typing import Dict, Any, Optional, List
 import pandas as pd
 import json
+import re
 from datetime import datetime, timedelta
 
 # Import logger with fallback
@@ -83,6 +84,79 @@ class CashFlowAIAssistant:
             log_app_warning("AI assistant availability check: NOT AVAILABLE")
         return available
 
+    def _format_response_as_html(self, text: str) -> str:
+        """Convert Claude's text response to HTML with proper formatting"""
+        lines = text.strip().split('\n')
+        html_parts = []
+        current_paragraph = []
+        in_list = False
+        
+        for line in lines:
+            line = line.strip()
+            
+            if not line:
+                # Empty line - end current paragraph or list
+                if current_paragraph:
+                    html_parts.append(f"<p class='mb-3'>{''.join(current_paragraph)}</p>")
+                    current_paragraph = []
+                if in_list:
+                    html_parts.append('</ul>')
+                    in_list = False
+                continue
+            
+            # Check if line starts with numbered section (e.g., "1. **", "2. **", "3. **")
+            if re.match(r'^\d+\.\s+\*\*', line):
+                # End previous paragraph/list if exists
+                if current_paragraph:
+                    html_parts.append(f"<p class='mb-3'>{''.join(current_paragraph)}</p>")
+                    current_paragraph = []
+                if in_list:
+                    html_parts.append('</ul>')
+                    in_list = False
+                
+                # Extract the heading text and format it
+                match = re.search(r'^\d+\.\s+\*\*(.+?)\*\*', line)
+                if match:
+                    heading = match.group(1)
+                    html_parts.append(f"<h4 class='font-semibold text-gray-900 mt-4 mb-2 text-lg'>{heading}</h4>")
+                    # Get any text after the heading
+                    remaining = line[match.end():].strip()
+                    if remaining:
+                        current_paragraph.append(remaining + ' ')
+            
+            # Check for bullet points (lines starting with -)
+            elif line.startswith('-'):
+                if current_paragraph:
+                    html_parts.append(f"<p class='mb-3'>{''.join(current_paragraph)}</p>")
+                    current_paragraph = []
+                
+                if not in_list:
+                    html_parts.append('<ul class="list-disc ml-6 mb-3 space-y-1">')
+                    in_list = True
+                
+                line_content = line[1:].strip()  # Remove the dash
+                # Convert **bold** to <strong>
+                line_content = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', line_content)
+                html_parts.append(f"<li>{line_content}</li>")
+            
+            else:
+                # Regular text line
+                if in_list:
+                    html_parts.append('</ul>')
+                    in_list = False
+                
+                # Convert **bold** to <strong>
+                line = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', line)
+                current_paragraph.append(line + ' ')
+        
+        # Add any remaining paragraph or close list
+        if current_paragraph:
+            html_parts.append(f"<p class='mb-3'>{''.join(current_paragraph)}</p>")
+        if in_list:
+            html_parts.append('</ul>')
+        
+        return ''.join(html_parts)
+
     def _make_claude_request(self, system_prompt: str, user_prompt: str, max_tokens: int = 500, question_type: str = "analysis") -> str:
         """Make a request to Claude API with logging"""
         if not self.is_available():
@@ -107,6 +181,9 @@ class CashFlowAIAssistant:
             # Extract response text
             response_text = response.content[0].text
 
+            # Format the response with HTML for better readability
+            formatted_response = self._format_response_as_html(response_text)
+
             # Calculate tokens used
             tokens_used = response.usage.input_tokens + response.usage.output_tokens
 
@@ -121,7 +198,7 @@ class CashFlowAIAssistant:
             log_app_info(
                 f"Claude API request successful - {tokens_used} tokens used")
 
-            return response_text
+            return formatted_response
 
         except Exception as e:
             error_msg = f"AI Analysis Error: {str(e)}. Please check your Claude API key and try again."
