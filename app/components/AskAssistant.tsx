@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import type { AnalysisResult } from '@/lib/types';
 import ResultsDisplay from './ResultsDisplay';
-// If the above doesn't work, use:
-// import ResultsDisplay from '@/app/components/ResultsDisplay';
 
 const QUESTIONS = [
   {
@@ -73,7 +71,7 @@ export default function AskAssistant({ sessionId, hasData }: AskAssistantProps) 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sessionId,
-          analysisType: questionId,
+          analysisType: questionId,  // ✅ Changed from 'question' to 'analysisType'
           budget: questionId === 'reorder' ? budget : undefined,
           language
         })

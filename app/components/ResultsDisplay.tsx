@@ -1,3 +1,5 @@
+// app/components/ResultsDisplay.tsx
+
 'use client';
 
 import type { AnalysisResult } from '@/lib/types';
@@ -33,10 +35,10 @@ export default function ResultsDisplay({ result, questionId }: ResultsDisplayPro
                   <tr key={idx} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm text-gray-900">{eater.category}</td>
                     <td className="px-4 py-3 text-sm text-gray-900 text-right font-medium">
-                      €{eater.amount.toFixed(2)}
+                      €{(eater.amount || 0).toFixed(2)}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-900 text-right">
-                      {eater.percentage?.toFixed(1)}%
+                      {(eater.percentage || 0).toFixed(1)}%
                     </td>
                   </tr>
                 ))}
@@ -70,16 +72,16 @@ export default function ResultsDisplay({ result, questionId }: ResultsDisplayPro
                   <tr key={idx} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm text-gray-900">{product.product_name}</td>
                     <td className="px-4 py-3 text-sm text-gray-900 text-right">
-                      €{product.revenue.toFixed(2)}
+                      €{(product.revenue || 0).toFixed(2)}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-900 text-right">
-                      €{product.gross_profit.toFixed(2)}
+                      €{(product.gross_profit || 0).toFixed(2)}
                     </td>
                     <td className="px-4 py-3 text-sm text-right">
                       <span className={`font-medium ${
-                        product.margin_pct < 0.2 ? 'text-red-600' : 'text-yellow-600'
+                        (product.margin_pct || 0) < 0.2 ? 'text-red-600' : 'text-yellow-600'
                       }`}>
-                        {(product.margin_pct * 100).toFixed(1)}%
+                        {((product.margin_pct || 0) * 100).toFixed(1)}%
                       </span>
                     </td>
                   </tr>
@@ -118,12 +120,12 @@ export default function ResultsDisplay({ result, questionId }: ResultsDisplayPro
                 {result.reorderPlan.map((item, idx) => (
                   <tr key={idx} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm text-gray-900">{item.product_name}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900 text-right">{item.suggested_qty}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900 text-right">{item.suggested_qty || 0}</td>
                     <td className="px-4 py-3 text-sm text-gray-900 text-right">
-                      €{item.budget_spend.toFixed(2)}
+                      €{(item.budget_spend || 0).toFixed(2)}
                     </td>
                     <td className="px-4 py-3 text-sm text-green-600 text-right font-medium">
-                      €{item.est_weekly_profit.toFixed(2)}
+                      €{(item.est_weekly_profit || 0).toFixed(2)}
                     </td>
                   </tr>
                 ))}

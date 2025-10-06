@@ -1,69 +1,107 @@
-import { NextResponse } from 'next/server';
-import { writeFile, mkdir, readFile } from 'fs/promises';
+// app/api/upload/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+import Papa from 'papaparse';
+import type { CashFlowData, UploadResponse } from '@/lib/types';
 
-export async function POST(request: Request) {
+async function parseCSV(file: File): Promise<any[]> {
+  const text = await file.text();
+  
+  return new Promise((resolve, reject) => {
+    Papa.parse(text, {
+      header: true,
+      dynamicTyping: true,
+      skipEmptyLines: true,
+      transformHeader: (header) => header.trim(),
+      complete: (results) => {
+        if (results.errors.length > 0) {
+          console.error('CSV parsing errors:', results.errors);
+        }
+        resolve(results.data);
+      },
+      error: (error) => reject(error)
+    });
+  });
+}
+
+export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     
-    const tempDir = join(process.cwd(), 'temp_data');
-    await mkdir(tempDir, { recursive: true });
-    
-    const sessionId = Date.now().toString();
-    const summary = {
-      transactions: 0,
-      refunds: 0,
-      payouts: 0,
-      products: 0
+    const files: Record<string, File | null> = {
+      transactions: formData.get('transactions') as File | null,
+      refunds: formData.get('refunds') as File | null,
+      payouts: formData.get('payouts') as File | null,
+      products: formData.get('products') as File | null
     };
-    
-    const csvData: any = {};
-    const entries = Array.from(formData.entries());
-    
-    // Save CSV files and store data
-    for (const [key, value] of entries) {
-      if (value instanceof File) {
-        const bytes = await value.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+
+    // Check if at least one file was uploaded
+    const uploadedFiles = Object.values(files).filter(f => f !== null);
+    if (uploadedFiles.length === 0) {
+      return NextResponse.json(
+        { error: 'No files uploaded' },
+        { status: 400 }
+      );
+    }
+
+    const data: Partial<CashFlowData> = {};
+
+    // Process each file and parse CSV properly
+    for (const [key, file] of Object.entries(files)) {
+      if (!file) continue;
+
+      try {
+        const parsed = await parseCSV(file);
+        console.log(`✅ Parsed ${key}:`, parsed.length, 'rows');
         
-        // Save CSV file
-        const filePath = join(tempDir, `${key}_${sessionId}.csv`);
-        await writeFile(filePath, buffer);
-        
-        // Parse CSV content
-        const content = buffer.toString();
-        const lines = content.split('\n').filter(line => line.trim());
-        const rowCount = lines.length - 1; // Subtract header
-        
-        // Store for JSON
-        csvData[key] = lines;
-        
-        if (key === 'transactions') summary.transactions = rowCount;
-        else if (key === 'refunds') summary.refunds = rowCount;
-        else if (key === 'payouts') summary.payouts = rowCount;
-        else if (key === 'products') summary.products = rowCount;
+        // Store the parsed data as objects, not strings!
+        data[key as keyof CashFlowData] = parsed as any;
+      } catch (err) {
+        console.error(`Error parsing ${key}:`, err);
+        return NextResponse.json(
+          { error: `Failed to parse ${key}`, details: err instanceof Error ? err.message : 'Unknown error' },
+          { status: 400 }
+        );
       }
     }
+
+    // Create temp_data directory if it doesn't exist
+    const dataDir = join(process.cwd(), 'temp_data');
+    await mkdir(dataDir, { recursive: true });
     
-    // Create consolidated JSON file for analysis
-    const jsonPath = join(tempDir, `${sessionId}.json`);
-    await writeFile(jsonPath, JSON.stringify({
-      sessionId,
-      uploadedAt: new Date().toISOString(),
-      data: csvData,
-      summary
-    }, null, 2));
+    // Generate session ID
+    const sessionId = Date.now().toString();
     
-    return NextResponse.json({
+    console.log('💾 Saving data with', data.transactions?.length, 'transactions');
+    
+    // Save data to file as proper JSON objects
+    await writeFile(
+      join(dataDir, `${sessionId}.json`),
+      JSON.stringify(data, null, 2)
+    );
+
+    const response: UploadResponse = {
       success: true,
       sessionId,
-      summary
-    });
-    
+      summary: {
+        transactions: data.transactions?.length || 0,
+        refunds: data.refunds?.length || 0,
+        payouts: data.payouts?.length || 0,
+        products: data.products?.length || 0
+      },
+      error: ''
+    };
+
+    return NextResponse.json(response);
+
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(
-      { error: 'Upload failed' },
+      { 
+        error: 'Failed to process files', 
+        details: error instanceof Error ? error.message : 'Unknown error' 
+      },
       { status: 500 }
     );
   }
