@@ -60,42 +60,42 @@ export default function ExecutiveSnapshot({ sessionId }: ExecutiveSnapshotProps)
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <div className="text-sm opacity-90 mb-1">Transactions</div>
-            <div className="text-2xl font-bold">{snapshot.totalTransactions.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{(snapshot.totalTransactions || 0).toLocaleString()}</div>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <div className="text-sm opacity-90 mb-1">Items Sold</div>
-            <div className="text-2xl font-bold">{snapshot.itemsSold.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{(snapshot.itemsSold || 0).toLocaleString()}</div>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <div className="text-sm opacity-90 mb-1">Gross Sales</div>
-            <div className="text-2xl font-bold">€{snapshot.grossSales.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div className="text-2xl font-bold">€{(snapshot.grossSales || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <div className="text-sm opacity-90 mb-1">Discounts</div>
-            <div className="text-2xl font-bold text-red-200">€{snapshot.discounts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div className="text-2xl font-bold text-red-200">€{(snapshot.discounts || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <div className="text-sm opacity-90 mb-1">Card Sales</div>
-            <div className="text-2xl font-bold">€{snapshot.cardSales.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div className="text-2xl font-bold">€{(snapshot.cardSales || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <div className="text-sm opacity-90 mb-1">Cash Sales</div>
-            <div className="text-2xl font-bold">€{snapshot.cashSales.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div className="text-2xl font-bold">€{(snapshot.cashSales || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <div className="text-sm opacity-90 mb-1">Processor Fees</div>
-            <div className="text-2xl font-bold text-yellow-200">€{snapshot.processorFees.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div className="text-2xl font-bold text-yellow-200">€{(snapshot.processorFees || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <div className="text-sm opacity-90 mb-1">Refunds</div>
-            <div className="text-2xl font-bold text-orange-200">€{snapshot.refunds.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div className="text-2xl font-bold text-orange-200">€{(snapshot.refunds || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           </div>
         </div>
       </div>

@@ -197,6 +197,8 @@ You need to run both the Next.js frontend and Python backend simultaneously.
 
 **Terminal 1 - Next.js Frontend:**
 
+In the rute directory "retail_pilot_poc"
+
 ```bash
 npm run dev
 ```
@@ -205,8 +207,10 @@ The application will be available at http://localhost:3000
 
 **Terminal 2 - Python AI Service:**
 
+In the "python-service" directory
+
 ```bash
-# Make sure virtual environment is activated
+# Make sure virtual environment is activated (only do this once)
 source python-service/venv/bin/activate
 
 # Start the Python service
