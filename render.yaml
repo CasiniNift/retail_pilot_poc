@@ -1,0 +1,21 @@
+# render.yaml
+services:
+  - type: web
+    name: retail-poc-api
+    env: python
+    region: oregon
+    buildCommand: pip install -r python-service/requirements.txt
+    startCommand: cd python-service && uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://aipoc.xyz,https://www.aipoc.xyz
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.0
