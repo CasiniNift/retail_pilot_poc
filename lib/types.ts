@@ -83,7 +83,6 @@ export interface Transaction {
   
   // API response types
   export interface UploadResponse {
-    error: string;
     success: boolean;
     sessionId: string;
     summary: {
@@ -92,6 +91,7 @@ export interface Transaction {
       payouts: number;
       products: number;
     };
+    error?: string; // optional
   }
   
   export interface ValidationError {
