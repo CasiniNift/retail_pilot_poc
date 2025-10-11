@@ -104,7 +104,7 @@ import type {
     const { transactions } = data;
   
     // Calculate date range
-    const dates = transactions.map(t => t.day.getTime());
+    const dates = transactions.map(t => new Date(t.day).getTime());
     const days = (Math.max(...dates) - Math.min(...dates)) / (1000 * 60 * 60 * 24) + 1;
   
     // Aggregate by product
